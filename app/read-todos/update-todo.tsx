@@ -14,7 +14,6 @@ import { z } from "zod";
 import { Todo } from "./columns";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { putTodo } from "../api/api";
-import { useRouter } from "next/navigation";
 
 export const todoFormSchema = z.object({
   title: z.string({ required_error: "A title is required" }).max(30, {
@@ -39,7 +38,6 @@ interface Props {
 
 export function UpdateTodo({ todo, dialogOpen, setDialogOpen }: Props) {
   const queryClient = useQueryClient();
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof todoFormSchema>>({
     resolver: zodResolver(todoFormSchema),
@@ -54,9 +52,9 @@ export function UpdateTodo({ todo, dialogOpen, setDialogOpen }: Props) {
   // Mutation for updating the todo
   const mutation = useMutation({
     mutationFn: putTodo,
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Todo updated successfully!");
-      queryClient.invalidateQueries(); 
+      queryClient.invalidateQueries();
       setDialogOpen(false);
     },
     onError: () => {
@@ -73,7 +71,9 @@ export function UpdateTodo({ todo, dialogOpen, setDialogOpen }: Props) {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Edit Todo</DialogTitle>
-          <DialogDescription>Make changes to your Todo here. Click save when you're done.</DialogDescription>
+          <DialogDescription>
+            Make changes to your Todo here. Click save when you&apos;re done.
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>

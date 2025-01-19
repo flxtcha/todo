@@ -2,7 +2,7 @@ import { z } from "zod";
 import { todoFormSchema } from "../read-todos/update-todo";
 import { Todo } from "../read-todos/columns";
 import { enGB } from "date-fns/locale";
-import { format, formatDate, parse } from "date-fns";
+import { format, parse } from "date-fns";
 
 const contextPath = 'http://localhost:8080/api/v1';
 

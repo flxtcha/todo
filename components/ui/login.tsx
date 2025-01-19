@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
-import axios from 'axios'; 
+import axios, { isAxiosError } from 'axios'; // Import AxiosError
 import {
   Form,
   FormControl,
@@ -20,8 +20,8 @@ const formSchema = z.object({
   email: z.string().email({
     message: "Must be a valid email.",
   }),
-  password: z.string().min(8, { 
-    message: 'Password must be at least 8 characters long' 
+  password: z.string().min(8, {
+    message: 'Password must be at least 8 characters long'
   })
 });
 
@@ -56,21 +56,25 @@ export function Login() {
         }
       );
 
-      if(response.status === 200) {
+      if (response.status === 200) {
         router.push('/read-todos');
       }
-    } catch (error: any) {
-      setServerError(error.response?.data?.message || 'Failed to login, try again...');
-      form.setError('root.serverError', {
+    } catch (error: unknown) { // Use `unknown` for better type safety
+      if (isAxiosError(error)) { // Check if error is an AxiosError
+        setServerError(error.response?.data?.message || 'Failed to login, try again...');
+        form.setError('root.serverError', {
           type: 'manual',
           message: error.response?.data?.message || 'Failed to login',
         });
+      } else {
+        setServerError('An unexpected error occurred');
+      }
       console.error('Error logging in:', error);
     }
   }
 
   function handleRegister() {
-    router.push('/register'); 
+    router.push('/register');
   }
 
   return (

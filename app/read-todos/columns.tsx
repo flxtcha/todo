@@ -14,7 +14,7 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { UpdateTodo } from "./update-todo";
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTodo } from "../api/api";
 import { useRouter } from "next/navigation";
 
@@ -24,6 +24,62 @@ export type Todo = {
   priority: "Low" | "Medium" | "High";
   deadline: Date;
   status: "Not Started" | "In Progress" | "Completed";
+};
+
+// Create a separate ActionsCell component to handle the hooks
+const ActionsCell = ({ todo }: { todo: Todo }) => {
+  const [open, setOpen] = useState(false);
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
+  const mutation = useMutation({
+    mutationFn: deleteTodo,
+    onSuccess: () => {
+      toast.success("Deleted Todo", {
+        description: new Date().toDateString(),
+        action: {
+          label: "Undo",
+          onClick: () => console.log("Implement Undo"),
+        },
+      });
+      queryClient.invalidateQueries(["todoData"]);
+      router.refresh();
+    },
+    onError: () => {
+      toast.error("Failed to delete todo.");
+    },
+  });
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        `${todo.title},${todo.priority},${todo.deadline},${todo.status}`
+      );
+      toast.success("Copied to clipboard!");
+    } catch (error) {
+      toast.error("Failed to copy to clipboard");
+      console.error(error);
+    }
+  };
+
+  return (
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-8 w-8 p-0">
+          <span className="sr-only">Open menu</span>
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+        <DropdownMenuItem onClick={handleCopy}>Copy Todo</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => setOpen(true)}>Edit Todo</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => mutation.mutate(todo.id)}>Delete Todo</DropdownMenuItem>
+      </DropdownMenuContent>
+      <UpdateTodo todo={todo} dialogOpen={open} setDialogOpen={setOpen} />
+    </DropdownMenu>
+  );
 };
 
 export const columns: ColumnDef<Todo>[] = [
@@ -83,58 +139,7 @@ export const columns: ColumnDef<Todo>[] = [
     id: "actions",
     cell: ({ row }) => {
       const todo = row.original;
-      const [open, setOpen] = useState(false);
-      const queryClient = useQueryClient(); 
-      const router = useRouter(); 
-
-      const mutation = useMutation({
-          mutationFn: deleteTodo,
-          onSuccess: () => {
-            toast.success("Deleted Todo", {
-              description: new Date().toDateString(),
-              action: {
-                label: "Undo",
-                onClick: () => console.log("Implement Undo"),
-              },
-            });
-            queryClient.invalidateQueries(["todoData"]);
-            router.refresh();
-          },
-          onError: (e) => {
-            toast.error("Failed to delete todo.");
-          },
-        });
-
-      const handleCopy = async () => {
-        try {
-          await navigator.clipboard.writeText(
-            `${todo.title},${todo.priority},${todo.deadline},${todo.status}`
-          );
-          toast.success("Copied to clipboard!");
-        } catch (error) {
-          toast.error("Failed to copy to clipboard");
-          console.error(error);
-        }
-      };
-
-      return (
-        <DropdownMenu modal={false}>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={handleCopy}>Copy Todo</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => setOpen(true)}>Edit Todo</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => mutation.mutate(todo.id)}>Delete Todo</DropdownMenuItem>
-          </DropdownMenuContent>
-          <UpdateTodo todo={todo} dialogOpen={open} setDialogOpen={setOpen} />
-        </DropdownMenu>
-      );
+      return <ActionsCell todo={todo} />;
     },
   },
 ];

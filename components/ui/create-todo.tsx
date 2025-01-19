@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import {
   Card,
   CardContent,
@@ -70,13 +69,12 @@ export default function CreateTodo() {
               queryClient.invalidateQueries(["todoData"]);
               router.push("/read-todos");
             },
-            onError: (e) => {
+            onError: () => {
               toast.error("Failed to create todo.");
             },
           });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const formattedDeadline = format(values.deadline, "dd-MM-yyyy");
     mutation.mutate(values)
   }
 

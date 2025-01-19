@@ -9,14 +9,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {
   NavigationMenu,
-  NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { Input } from "./input";
-import { ModeToggle } from "./ModeToggle";
 import axios from "axios";
 import { useRouter } from 'next/navigation';
 import { Avatar, AvatarFallback } from "./avatar";
