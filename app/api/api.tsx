@@ -4,7 +4,7 @@ import { Todo } from "../read-todos/columns";
 import { enGB } from "date-fns/locale";
 import { format, parse } from "date-fns";
 
-const contextPath = 'https://mysterious-sada-tomfletcher-e440737c.koyeb.app:8000/';
+const contextPath = 'https://mysterious-sada-tomfletcher-e440737c.koyeb.app/';
 
 function formattedDeadline(deadline: Date) {
   return format(deadline, "dd-MM-yyyy");
