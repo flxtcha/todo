@@ -43,7 +43,7 @@ export function Login() {
     setServerError(null);
     try {
       const response = await axios.post(
-        'http://localhost:8080/api/v1/login',
+        'https://mysterious-sada-tomfletcher-e440737c.koyeb.app:8000/login',
         new URLSearchParams({
           username: values.email, // Spring Security expects "username" by default
           password: values.password, // Spring Security expects "password" by default
