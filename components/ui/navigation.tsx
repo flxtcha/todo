@@ -28,7 +28,7 @@ export default function Navigation() {
 
   async function clickLogout() {
     try {
-      await axios.get("http://localhost:8080/api/v1/logout", {
+      await axios.get("https://localhost:8080/api/v1/logout", {
         withCredentials: true,
       });
       router.push("/")
