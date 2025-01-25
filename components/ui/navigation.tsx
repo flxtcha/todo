@@ -28,7 +28,7 @@ export default function Navigation() {
 
   async function clickLogout() {
     try {
-      await axios.get("https://mysterious-sada-tomfletcher-e440737c.koyeb.app/logout", {
+      await axios.get("https://api.t-fletcher.co.uk/logout", {
         withCredentials: true,
       });
       router.push("/")
