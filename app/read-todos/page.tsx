@@ -19,7 +19,7 @@ export default function ReadTodos() {
   return (
     <div className="read-todos flex flex-col ml-4 mr-4 h-screen">
       <Navigation />
-      <DataTable columns={columns} /*Double check this*/ data={data ? data : []} />
+      <DataTable columns={columns} data={data ? data : []} />
     </div> 
   );
 }
