@@ -16,14 +16,11 @@ export async function getTodos(): Promise<Todo[]> {
     credentials: "include"
   });
 
-  console.log("Get request sent")
-
   if (!res.ok) {
     throw new Error(`Failed to fetch todos: ${res.statusText}`);
   }
 
   const todos: Todo[] = await res.json(); 
-  console.log(todos); //Returns a javascript objec not json
 
   return todos.map((todo) => ({
     ...todo,
@@ -43,8 +40,6 @@ export async function postTodo(values: z.infer<typeof todoFormSchema>) {
       deadline: () => formattedDeadline(values.deadline),
     }),
   });
-
-  console.log("Post request sent")
 
   if (!res.ok) {
     throw new Error(`Failed to POST todo: ${res.statusText}`)
@@ -66,10 +61,6 @@ export async function putTodo({ values, todoId, }: { values: z.infer<typeof todo
       deadline: () => formattedDeadline(values.deadline),
     }),
   });
-
-  console.log(formattedDeadline(values.deadline))
-
-  console.log("Put request sent")
 
   if (!res.ok) {
     throw new Error(`Failed to PUT (Update) todo: ${res.statusText}`);
