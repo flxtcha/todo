@@ -14,6 +14,7 @@ import { z } from "zod";
 import { Todo } from "./columns";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { putTodo } from "../api/api";
+import { useRouter } from "next/router";
 
 export const todoFormSchema = z.object({
   title: z.string({ required_error: "A title is required" }).max(30, {
@@ -38,6 +39,7 @@ interface Props {
 
 export function UpdateTodo({ todo, dialogOpen, setDialogOpen }: Props) {
   const queryClient = useQueryClient();
+  const router = useRouter(); 
 
   const form = useForm<z.infer<typeof todoFormSchema>>({
     resolver: zodResolver(todoFormSchema),
@@ -56,6 +58,7 @@ export function UpdateTodo({ todo, dialogOpen, setDialogOpen }: Props) {
       toast.success("Todo updated successfully!");
       queryClient.invalidateQueries();
       setDialogOpen(false);
+      router.reload(); 
     },
     onError: () => {
       toast.error("Failed to update the todo.");

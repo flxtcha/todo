@@ -40,7 +40,7 @@ export async function postTodo(values: z.infer<typeof todoFormSchema>) {
   return res.json();
 }
 
-export async function putTodo({ values, todoId, }: { values: z.infer<typeof todoFormSchema>, todoId: string }) {// Format deadline to 'dd-MM-yyyy'
+export async function putTodo({ values, todoId, }: { values: z.infer<typeof todoFormSchema>, todoId: string }) {
 
   const res = await fetch(`${contextPath}/update-todo/${todoId}`, {
     method: "PUT",
